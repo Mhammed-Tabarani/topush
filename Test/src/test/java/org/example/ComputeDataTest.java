@@ -143,3 +143,204 @@ class ComputeDataTest {
 
     }
 }
+///////////////////////
+package org.example;
+
+public abstract class Compte {
+    private String nom;
+    private int numeroCompte;
+    private double solde;
+    private static double tauxinteret;
+
+
+    public Compte(String nom, int numeroCompte, double solde, double tauxinteret) {
+        this.nom = nom;
+        this.numeroCompte = numeroCompte;
+        this.solde = solde;
+        this.tauxinteret = tauxinteret;
+    }
+    public Compte(){
+
+    }
+
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public int getNumeroCompte() {
+        return numeroCompte;
+    }
+
+    public void setNumeroCompte(int numeroCompte) {
+        this.numeroCompte = numeroCompte;
+    }
+
+    public double getSolde() {
+        return solde;
+    }
+
+    public void setSolde(double solde) {
+        this.solde = solde;
+    }
+
+    public double getTauxinteret() {
+        return tauxinteret;
+    }
+
+    public void setTauxinteret(double tauxinteret) {
+        this.tauxinteret = tauxinteret;
+    }
+
+    public  void debiter(double MT){
+        if(this.solde>MT){
+            this.solde=this.solde-MT;
+
+        }
+        else System.out.println("solde insuffisant");
+    }
+    public void  deposer(double MT){
+        this.solde=this.solde+MT;
+    }
+
+    public abstract double calculerInteret();
+
+}
+
+
+
+
+
+
+
+
+
+////////////////
+
+
+package org.example;
+
+public class CompteA extends Compte{
+    public CompteA(String nom, int numeroCompte, double solde) {
+        super(nom, numeroCompte, solde, 0.2);
+    }
+
+    public CompteA() {
+    }
+
+    @Override
+    public void debiter(double MT) {
+        super.debiter(MT);
+    }
+
+    @Override
+    public double calculerInteret() {
+        return this.getSolde()*this.getTauxinteret();
+    }
+}
+
+
+
+////////////
+package org.example;
+
+public class CompteEpargne extends Compte{
+
+
+    public CompteEpargne(String nom, int numeroCompte, double solde) {
+        super(nom, numeroCompte, solde,0.5);
+    }
+
+    public CompteEpargne() {
+    }
+
+
+    public void debiter(double MT) {
+        System.out.println("vous ne pouvez pas debiter");
+    }
+
+    @Override
+    public double calculerInteret() {
+        return this.getSolde()*this.getTauxinteret();
+    }
+}
+
+
+
+/////////////
+
+
+
+package org.example;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class CompteATest {
+
+    @DisplayName("Debiter de Compte de type A accepter (Montant inf au solde")
+    @Test
+    void debiterAcc() {
+        Compte compte=new CompteA("Mhammmed",12345,10000);
+        compte.debiter(1000);
+        double expected=9000;
+        assertEquals(expected,compte.getSolde());
+    }
+    @DisplayName("Debiter de Compte de type A NONaccepter (Montant sup au solde")
+    @Test
+    void debiterNotAcc() {
+        Compte compte=new CompteA("Mhammmed",12345,10000);
+        compte.debiter(40000);
+        double expected=10000;
+        assertEquals(expected,compte.getSolde());
+    }
+
+    @DisplayName("Calcule d'interet Compte de type A")
+    @Test
+    void calculerInteret() {
+        Compte compte=new CompteA("Mhammmed",12345,10000);
+        assertEquals(2000,compte.calculerInteret());
+
+    }
+}
+
+
+
+
+////////////////////////
+
+package org.example;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class CompteEpargneTest {
+
+    @DisplayName("Debiter non accepter car c'est un compte epargne")
+    @Test
+    void debiter() {
+        Compte tawfir=new CompteEpargne("Mhammmed",12345,10000);
+        tawfir.debiter(5000);
+        double expected=10000;
+        assertEquals(10000,tawfir.getSolde());
+    }
+
+    @DisplayName("Calcule d'interet Compte de type Epargne")
+    @Test
+    void calculerInteret() {
+        Compte compte=new CompteEpargne("Mhammmed",12345,10000);
+        assertEquals(5000,compte.calculerInteret());
+    }
+}
+
+
+//////
+
